@@ -1,0 +1,19 @@
+{
+  "name": "staking-core-wallet-level",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OwliesGame/staking-core-wallet-level.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OwliesGame/staking-core-wallet-level/issues"
+  },
+  "homepage": "https://github.com/OwliesGame/staking-core-wallet-level#readme"
+}

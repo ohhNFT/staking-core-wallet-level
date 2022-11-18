@@ -28,13 +28,7 @@ const Collections = {
         description : "Welcome to a very Owlies Halloween. Baby Owlies have taken to the streets to trick or trick. Make sure to snag one of these pfps to make your Halloween extra special! (These NFTs can also be stake to earn $STRDST!)",
         sg721 : "stars1ef44ct5l93l74z4al3ledtrntvrwc3sm6hn6kvss5der4w7fqx6su8jtfu",
         minter : "stars1wggdnp09rd0zszpcrjzs33s9pz7qz2tega83lw2mevpjvluw64vsy2gykv"
-    },
-    The_Watchers : {
-        name : "",
-        description : "",
-        sg721 : "",
-        minter : ""
-    },
+    }
 }
 
 module.exports = Collections;

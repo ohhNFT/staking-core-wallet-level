@@ -15,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/OwliesGame/staking-core-wallet-level/issues"
   },
-  "homepage": "https://github.com/OwliesGame/staking-core-wallet-level#readme"
+  "homepage": "https://github.com/OwliesGame/staking-core-wallet-level#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "cosmwasm": "^1.1.1",
+    "express": "^4.18.2",
+    "moment": "^2.29.4",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3"
+  }
 }

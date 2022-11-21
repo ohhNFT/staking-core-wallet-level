@@ -4,6 +4,9 @@ const cors = require('cors');
 
 var app = express();
 
+
+
+const router = require('./src/router')
 //init server
 app.listen(process.env.PORT || 3000, async () => {
     console.log("Server running on port 3000");
@@ -14,6 +17,9 @@ app.use(cors({
     origin: '*'
 }));
 
+app.use("/api",router)
+
 app.use("/",async (req, res, next) =>{
     res.send('Welcome to Owlies Core');
 })
+

@@ -4,6 +4,27 @@ const { getMetadata } = require("../helpers/MetadatahHelper");
 
 const axios = require('axios').default
 
+const getCollectionDetails = async () => {
+    try {
+        let collections = []
+
+        for (const [key, value] of Object.entries(Collections)) {
+
+            collections.push({
+                ...value,
+                collection_id: key
+            });
+
+        }
+
+        return collections;
+
+    } catch (error) {
+        console.log(error);
+        throw error
+    }
+}
+
 const getProfileInfo = async (address) => {
     try {
 
@@ -24,9 +45,6 @@ const getProfileInfo = async (address) => {
                 for (let token of tokens) {
 
                     if (value.CID) {
-                        console.log('getting data');
-
-                        let url = (`${process.env.IPFS_Gateway}/${value.CID}/${token}`);
 
                         let metadata = await getMetadata(value.CID, token)
 
@@ -38,7 +56,7 @@ const getProfileInfo = async (address) => {
                 tokenBasicInfo.push({
                     collection: key,
                     tokens,
-                    details: nfts
+                    nft_details: nfts
                 })
 
             } catch (error) {
@@ -57,5 +75,6 @@ const getProfileInfo = async (address) => {
 
 module.exports = {
     getProfileInfo,
+    getCollectionDetails,
 
 }

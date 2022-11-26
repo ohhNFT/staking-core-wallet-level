@@ -20,8 +20,8 @@ const Collections = {
     Owlies_Community_Badges_Season_1 : {
         name : "Owlies Community Badges: Season 1",
         description : "An exciting community lead project inside the Owlies trading game! Collect these badges by participating in the Discord.gg/ohhNFT to earn XP by chatting, completing quests, and more!",
-        sg721 : "stars1kqyqtsrxewnj9c5lca63kzd3j2alntl63m5ukyj3j3tmp2m79j5qef63uq",
-        minter : "stars1rtjcggr6fxqqm24r9fjhxs53qqw9qflujyd34tdzh6dwrkvr8qgq25f7pc"
+        sg721 : "stars1rtjcggr6fxqqm24r9fjhxs53qqw9qflujyd34tdzh6dwrkvr8qgq25f7pc",
+        minter : "stars1kqyqtsrxewnj9c5lca63kzd3j2alntl63m5ukyj3j3tmp2m79j5qef63uq"
     },
     A_Very_Owlies_Halloween : {
         name : "A Very Owlies Halloween",

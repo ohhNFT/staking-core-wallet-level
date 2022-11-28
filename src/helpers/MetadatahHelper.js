@@ -6,7 +6,10 @@ const { resolve } = require('path');
 const getMetadata = async (cid, token) => {
 
     return new Promise((resolve, rejects) => {
-        https.get(`${process.env.IPFS_Gateway}/${cid}/${token}`, (resp) => {
+        let url = `${process.env.IPFS_Gateway}/${cid}/${token}`;
+
+        console.log(url);
+        https.get(url, (resp) => {
 
             let data = '';
 

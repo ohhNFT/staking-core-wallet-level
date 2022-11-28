@@ -1,7 +1,5 @@
 
-const { rejects } = require('assert');
 const https = require('https');
-const { resolve } = require('path');
 
 const getMetadata = async (cid, token) => {
 
@@ -9,6 +7,7 @@ const getMetadata = async (cid, token) => {
         let url = `${process.env.IPFS_Gateway}/${cid}/${token}`;
 
         console.log(url);
+
         https.get(url, (resp) => {
 
             let data = '';
@@ -17,6 +16,8 @@ const getMetadata = async (cid, token) => {
                 data += chunk;
             });
 
+            console.log(data);
+            
             // The whole response has been received. Print out the result.
             resp.on('end', () => {
                 resolve(JSON.parse(data))

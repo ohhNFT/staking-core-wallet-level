@@ -19,6 +19,9 @@ app.use(cors({
 app.use("/api", router)
 
 app.use("/", async (req, res, next) => {
-    res.send('Welcome to Owlies Core');
+    res.status(200).json({
+        message : 'Welcome to Owlies Core',
+        version : '0.0.1'
+    });
 })
 

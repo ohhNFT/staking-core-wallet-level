@@ -46,7 +46,7 @@ const getProfileInfo = async (address) => {
 
                     if (value.CID) {
 
-                        let metadata = await getMetadata(value.CID, token)
+                        let metadata = await getMetadata(key, token)
 
                         nfts.push(metadata)
                     }

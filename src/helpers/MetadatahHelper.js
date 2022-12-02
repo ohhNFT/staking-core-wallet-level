@@ -1,33 +1,48 @@
 
 const https = require('https');
+const axios = require('axios');
 
-const getMetadata = async (cid, token) => {
+const getMetadata = async (collection, token) => {
 
-    return new Promise((resolve, rejects) => {
-        let url = `${process.env.IPFS_Gateway}/${cid}/${token}`;
+    //TODO : Validate token is minted or not
 
-        console.log(url);
+    const allMetadata = require(`../../metadata/${collection}.json`);
 
-        https.get(url, (resp) => {
+    return allMetadata[parseInt(token) - 1];
 
-            let data = '';
+    // return new Promise((resolve, reject) => {
 
-            resp.on('data', (chunk) => {
-                data += chunk;
-            });
+    //     let url = `${process.env.IPFS_Gateway}/${cid}/${token}`;
 
-            console.log(data);
+    //     const req = https.get(url, (res) => {
 
-            // The whole response has been received. Print out the result.
-            resp.on('end', () => {
-                resolve(data)
-            });
+    //         res.setEncoding('utf8');
 
-        }).on("error", (err) => {
-            rejects("Error: " + err.message)
-        });
-    })
+    //         let responseBody = '';
+
+    //         res.on('data', (chunk) => {
+    //             responseBody += chunk;
+    //         });
+
+    //         res.on('end', () => {
+    //             try {
+    //                 resolve(JSON.parse(responseBody));
+    //             } catch (error) {
+    //                 reject(error);
+    //             }
+    //         });
+    //     });
+
+    //     req.on('error', (err) => {
+    //         reject(err);
+    //     });
+
+    //     req.write(data)
+    //     req.end();
+    // });
 }
+
+
 
 module.exports = {
     getMetadata,

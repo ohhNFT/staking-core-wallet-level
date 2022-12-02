@@ -6,7 +6,8 @@ const Collections = {
         minter: "stars1lkrunks3n8adsymusxy453q2u0ctpkeqmurn55ny6hnenl4px09qd7jl6g",
         CID: 'bafybeidziayy5krrysvaf23bu2y3vke53rghka6wphbssifvlmnyfttoqa/metadata',
         image: 'https://ipfs.stargaze.zone/ipfs/bafybeidvz6wlbnejavufgd2yxntn3ls2ujgj723a42kvp6vuygjridt42a',
-        chain: 'staragze'
+        chain: 'staragze',
+        size : 6888
     },
     Disconnected_Memories: {
         name: "ohhNFT.com Presents: Disconnected Memories",
@@ -15,7 +16,8 @@ const Collections = {
         minter: "stars140fv0zmlnd5vx54skeu2aeazwpvjpgwplhvy6k9xctvx7frfv3tsnsd60e",
         CID: 'bafybeibmqeecx5hbblrixk42n5cjqw6qw776tdxmdamsacloo5ue2qxpfm/metadata',
         image: 'https://ipfs.stargaze.zone/ipfs/bafybeicjidhlkha64czxiokc7ugjbqoycnktyh7c2ga7iqdhfiraf5vwz4',
-        chain: 'staragze'
+        chain: 'staragze',
+        size : 12
     },
     Genesis_First_Press_Owlies: {
         name: "Genesis First Press Owlies",
@@ -24,7 +26,8 @@ const Collections = {
         minter: "stars1zs0uj3lm2jfeeekkula2rs2axs2txpyll3tnupu6flyd6mjjgv7sh7txv6",
         CID: 'bafybeie64jfhxp5gsjnqqrrnq6i3gwqykrzfro6uwkkp5oququsnb3gzai/galaxylq6WKJ',
         image: 'https://ipfs.stargaze.zone/ipfs/bafybeih3kfft6ydocs5vsajb2rqakb5hsunaxnsinguwpbbbab336l5gcy',
-        chain: 'staragze'
+        chain: 'staragze',
+        size : 888
     },
     Owlies_Community_Badges_Season_1: {
         name: "Owlies Community Badges: Season 1",
@@ -33,7 +36,8 @@ const Collections = {
         minter: "stars1kqyqtsrxewnj9c5lca63kzd3j2alntl63m5ukyj3j3tmp2m79j5qef63uq",
         CID: 'bafybeifxj3rdzciqxdliunif73unaaeh6e3sxp7lkkm4zspvcfs77fcvna',
         image: 'https://ipfs.stargaze.zone/ipfs/bafybeic3dfmje6unop3cktdq4uw4hfkzzobzcoxx3ju43izba3meugmw6u',
-        chain: 'staragze'
+        chain: 'staragze',
+        size : 2400
     },
     A_Very_Owlies_Halloween: {
         name: "A Very Owlies Halloween",
@@ -42,7 +46,8 @@ const Collections = {
         minter: "stars1wggdnp09rd0zszpcrjzs33s9pz7qz2tega83lw2mevpjvluw64vsy2gykv",
         CID: 'bafybeidzffjy4iawwwcrhki3pye2ssv6qbsgqm63pooob7nfeo3rpvpacu',
         image: 'https://ipfs.stargaze.zone/ipfs/bafybeiaf6a7w5quspqkrkg6urncx3eqxa63rjyguh3v6blsfmailkwdave/Owlies%20Halloween.gif',
-        chain: 'staragze'
+        chain: 'staragze',
+        size : 330
     }
 }
 

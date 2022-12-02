@@ -53,16 +53,15 @@ const getProfileInfo = async (address) => {
 
                 }
 
+                const collection = { ...value }
+
+                //remove CID
+                delete collection.CID
+
                 tokenBasicInfo.push({
                     collection_key: key,
-                    name : value.name,
-                    contracts : {
-                        minter : value.minter,
-                        sg721 : value.sg721
-                    },
-                    description : value.description,
                     tokens,
-                    nft_details: nfts
+                    collection
                 })
 
             } catch (error) {

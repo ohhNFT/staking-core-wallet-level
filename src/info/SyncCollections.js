@@ -61,7 +61,8 @@ const getProfileInfo = async (address) => {
                 tokenBasicInfo.push({
                     collection_key: key,
                     tokens,
-                    collection
+                    collection,
+                    nft_details : nfts
                 })
 
             } catch (error) {

@@ -1,6 +1,7 @@
 const express = require('express');
 const { processResponse } = require('../helpers/ResponseHelper');
 const { getProfileInfo, getCollectionDetails } = require('./SyncCollections');
+const { getStakingInfo } = require('./SyncStakingInfo');
 const router = express.Router();
 
 
@@ -41,4 +42,16 @@ router.get('/wallet', async (req, res, next) => {
     }
 })
 
+router.get('/staking-info', async (req, res, next) => {
+    try {
+
+        const stakingInfo = await getStakingInfo();
+
+        return res.status(200).json(processResponse('Staking Tokonomics', '', stakingInfo));
+
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json(processResponse('', 'Error', null))
+    }
+})
 module.exports = router;

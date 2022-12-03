@@ -48,6 +48,16 @@ const Collections = {
         image: 'https://ipfs.stargaze.zone/ipfs/bafybeiaf6a7w5quspqkrkg6urncx3eqxa63rjyguh3v6blsfmailkwdave/Owlies%20Halloween.gif',
         chain: 'staragze',
         size : 330
+    },
+    Bad_Kids_Interchain_Community_Badge : {
+        name : 'ohhNFT Presents: Bad Kids Interchain Community Badge',
+        description : 'Interchain Community Badges are a celebration of Cosmos Communities. ohhNFT celebrates the incredible Bad Kids community.',
+        sg721 : 'stars12559hu4m8lc7nkv3ugadfkgpy4q4k2a0y473tgv3hfhzv2x950tqqd5qnz',
+        minter : 'stars1fjm70x5k967ecwtqxntt88peylg8zcj3mqy0ehp057pyppp9pdwsnc8cvw',
+        CID : 'bafybeibprifabdlxuxqxmogp5djkxa2g2kfczfqawyzxlr42f7zp3q6ewa',
+        image : 'https://bafybeicwxov2ty5athlbtw4kgxzhz6ndfvdrjyketmedtvdthhcux4xrny.ipfs.nftstorage.link/ipfs/bafybeicwxov2ty5athlbtw4kgxzhz6ndfvdrjyketmedtvdthhcux4xrny/Gif%20(1).gif',
+        chain : 'staragze',
+        size : 379,
     }
 }
 

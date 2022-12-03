@@ -62,7 +62,7 @@ const getProfileInfo = async (address) => {
                     collection_key: key,
                     tokens,
                     collection,
-                    nft_details : nfts
+                    nft_details: nfts
                 })
 
             } catch (error) {
@@ -77,7 +77,6 @@ const getProfileInfo = async (address) => {
         throw error;
     }
 }
-
 
 module.exports = {
     getProfileInfo,

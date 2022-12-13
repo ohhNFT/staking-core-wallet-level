@@ -12,11 +12,11 @@ router.get('/all-owlies-collections', async (req, res, next) => {
 
         const collections = await getCollectionDetails();
 
-        return res.status(200).json(processResponse('All Owlies collection details', '', collections));
+        return res.status(200).json(processResponse('All Owlies collection details', collections));
 
     } catch (error) {
         console.log(error);
-        return res.status(400).json(processResponse('', 'Error', null))
+        return res.status(400).json(processResponse(error.toString(), null))
     }
 })
 
@@ -47,11 +47,11 @@ router.get('/staking-info', async (req, res, next) => {
 
         const stakingInfo = await getStakingInfo();
 
-        return res.status(200).json(processResponse('Staking Tokonomics', '', stakingInfo));
+        return res.status(200).json(processResponse('Staking Tokonomics', stakingInfo));
 
     } catch (error) {
         console.log(error);
-        return res.status(400).json(processResponse('', 'Error', null))
+        return res.status(400).json(processResponse(error.toString(), null))
     }
 })
 module.exports = router;

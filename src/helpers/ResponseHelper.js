@@ -1,8 +1,7 @@
-const processResponse = (message,error,data) =>{
+const processResponse = (message,data) =>{
 
     return {
         message,
-        error,
         data
     }
 }

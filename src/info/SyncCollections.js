@@ -1,4 +1,4 @@
-const Collections = require("../../data/collections");
+const {Collections} = require("../../data/collections");
 const { getClient } = require("../helpers/ChainHelper");
 const { getMetadata } = require("../helpers/MetadatahHelper");
 
@@ -6,19 +6,7 @@ const axios = require('axios').default
 
 const getCollectionDetails = async () => {
     try {
-        let collections = []
-
-        for (const [key, value] of Object.entries(Collections)) {
-
-            collections.push({
-                ...value,
-                collection_id: key
-            });
-
-        }
-
-        return collections;
-
+        return Collections;
     } catch (error) {
         console.log(error);
         throw error

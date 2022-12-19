@@ -11,12 +11,14 @@ app.use(bodyParser.json());
 
 
 const router = require('./src/router');
-const { calculatePoints } = require("./src/stake/StakeCore");
+const { calculatePoints, claimAllPoints } = require("./src/stake/StakeCore");
+const { getBalance } = require("./src/info/Balance");
 
 //init server
 app.listen(process.env.PORT || 3000, async () => {
     console.log("Server running on port 3000");
-    calculatePoints();
+    // await calculatePoints()
+    // await getBalance('stars17y9ysn4uwusc0qv0d48wtc5rf4gnu6mqvjpvg9')
 });
 
 ///validate cors

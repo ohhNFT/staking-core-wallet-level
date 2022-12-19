@@ -1,5 +1,6 @@
 const express = require('express');
 const { processResponse } = require('../helpers/ResponseHelper');
+const { getBalance } = require('./Balance');
 const { getProfileInfo, getCollectionDetails } = require('./SyncCollections');
 const { getStakingInfo } = require('./SyncStakingInfo');
 const router = express.Router();
@@ -13,6 +14,26 @@ router.get('/all-owlies-collections', async (req, res, next) => {
         const collections = await getCollectionDetails();
 
         return res.status(200).json(processResponse('All Owlies collection details', collections));
+
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json(processResponse(error.toString(), null))
+    }
+})
+
+router.get('/wallet-balance', async (req, res, next) => {
+    try {
+
+        const { address } = req.query
+
+        //validate address
+        if (!address) {
+            return res.status(400).json(processResponse('', 'Address not valid', null));
+        }
+
+        const balance = await getBalance(address);
+
+        return res.status(200).json(processResponse('Account Balance', balance));
 
     } catch (error) {
         console.log(error);

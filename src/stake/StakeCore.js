@@ -194,9 +194,63 @@ const calculatePoints = async () =>{
     }
 }
 
+const claimAllPoints = async (owner) =>{
+    try {
+        //get the staked nfts
+        const pool = await getConnection();
+
+        const result = await pool.query(`SELECT * from stakes WHERE owner=?`, [owner]);
+
+        if(result[0].length === 0){
+            return {
+                data: [],
+                status: StatusCodes.OK,
+                message: 'No_Staked_Tokens_Found'
+            }
+        }else{
+
+            //get the account details
+            const resultOwner = await pool.query(`SELECT * from owners WHERE stars_address=?`, [owner]);
+
+            if(resultOwner[0].length === 0){
+                return {
+                    data: [],
+                    status: StatusCodes.OK,
+                    message: 'No_Account_Found'
+                }
+            }
+            //get the points from all tables
+            let totalPoints = 0;
+
+            for(let token of result[0]){
+
+                totalPoints += token.points
+                
+            }
+
+            return {
+                data: [],
+                status: StatusCodes.OK,
+                message: 'OK'
+            }
+        }
+
+        
+
+    } catch (error) {
+        console.log('error-claim-points', error);
+        return {
+            data: [],
+            status: StatusCodes.NOT_ACCEPTABLE,
+            message: 'Something went wrong.Please try again later'
+        }
+    }
+}
+
 
 module.exports = {
     markForStake,
     initiateStake,
-    calculatePoints
+    calculatePoints,
+    claimAllPoints
 }

@@ -35,6 +35,9 @@ const markForStake = async (params) => {
 
 const initiateStake = async (params) => {
     try {
+
+        //TODO :Check if it is already staked
+
         const { sender, token_id, collection } = params
 
         const pool = await getConnection();
@@ -81,11 +84,12 @@ const initiateStake = async (params) => {
                     let collectionDetails = await getCollectionBySg721(collection);
                     if (collectionDetails) {
                         //save the details
-                        let insertQuery = `INSERT INTO stakes (collection,owner,token_id,rate,status,timestamp) VALUES (?,?,?,?,?,?)`;
+                        let insertQuery = `INSERT INTO stakes (collection,owner,token_id,rate,status,timestamp,last_point_added) VALUES (?,?,?,?,?,?,?)`;
 
-                        let timestamp = moment.utc(moment.now()).valueOf();
+                        let timestamp = moment().valueOf();
                         // let rd= moment.utc(timestamp).format('dddd, MMMM Do, YYYY h:mm:ss A')
 
+                        //TODO : Get current rates
                         let rate = 0.005;
 
                         const insertResult = await pool.query(insertQuery,
@@ -95,8 +99,13 @@ const initiateStake = async (params) => {
                                 token_id,
                                 rate,
                                 1,
+                                timestamp,
                                 timestamp
                             ]);
+
+                        //update the mark stake
+                        let update = "UPDATE mark_stake SET status=1 WHERE id=?";
+                        await pool.query(update,[markDetails.id])
 
                         return {
                             data: {
@@ -134,13 +143,6 @@ const initiateStake = async (params) => {
                 }
 
             }
-
-            return {
-                data: [],
-                status: StatusCodes.OK,
-                message: 'Done'
-                // message : (affectedRows === 1) ? 'Ok' : 'NOT_OK'
-            }
         }
 
     } catch (error) {
@@ -153,8 +155,48 @@ const initiateStake = async (params) => {
     }
 }
 
+const calculatePoints = async () =>{
+    try {
+        const pool = await getConnection();
+        
+        let result = await pool.query('SELECT * from stakes',[]);
+
+        let stakes = result[0];
+
+        for(let nft of stakes){
+            // get the diff
+            try {
+                let now  = moment();
+                let last_point_added = moment(parseInt(nft.last_point_added));
+
+                let diff = now.diff(last_point_added,'days',true);
+            
+                let new_points = parseFloat(nft.rate) * diff
+
+                let currentPoints = parseFloat(nft.points) + parseFloat(new_points.toFixed(6));
+
+                console.log(parseFloat(nft.points)
+                ,parseFloat(new_points.toFixed(6))
+                ,currentPoints);
+
+                let update = "UPDATE stakes SET points=? WHERE id=?";
+                
+                await pool.query(update,[currentPoints,nft.id])
+                
+            } catch (error) {
+                console.log('error update points',error);
+            }
+
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
 module.exports = {
     markForStake,
-    initiateStake
+    initiateStake,
+    calculatePoints
 }

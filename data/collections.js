@@ -148,7 +148,7 @@ const Collections = [
         ],
     },
     {
-        name : 'Demo : Wads',
+        name : 'Demo Collection 1',
         description : 'Demo : Using this to test the statking',
         sg721 : 'stars1xy930u7nzynzzeld2erved4rtdkzrleqt9jr2fvkxn3d6ct4s5xs3lynaj',
         minter : 'stars1fjm70x5k967ecwtqxntt88peylg8zcj3mqy0ehp057pyppp9pdwsnc8cvw',
@@ -164,9 +164,25 @@ const Collections = [
         ],
     },
     {
-        name : 'Demo : Bad kids',
+        name : 'Demo collection 2',
         description : 'Demo : Using this to test the statking',
         sg721 : 'stars19u7tjuk66zx277q7j2edxr2agjnlxac4lwyrqrfaelgjhacvchhqwxlkul',
+        minter : 'stars1fjm70x5k967ecwtqxntt88peylg8zcj3mqy0ehp057pyppp9pdwsnc8cvw',
+        CID : 'bafybeibprifabdlxuxqxmogp5djkxa2g2kfczfqawyzxlr42f7zp3q6ewa',
+        image : 'https://bafybeicwxov2ty5athlbtw4kgxzhz6ndfvdrjyketmedtvdthhcux4xrny.ipfs.nftstorage.link/ipfs/bafybeicwxov2ty5athlbtw4kgxzhz6ndfvdrjyketmedtvdthhcux4xrny/Gif%20(1).gif',
+        chain : 'staragze',
+        size : 379,
+        rates: [
+            {
+                rate: 0.06,
+                category: 'all'
+            }
+        ],
+    },
+    {
+        name : 'Demo collection 3 ',
+        description : 'Demo : Using this to test the statking',
+        sg721 : 'stars1sdw7euv3tjzf4s3q6a8lfra8fxf9su5dd9g24trkx04lmzgxs85qlme78p',
         minter : 'stars1fjm70x5k967ecwtqxntt88peylg8zcj3mqy0ehp057pyppp9pdwsnc8cvw',
         CID : 'bafybeibprifabdlxuxqxmogp5djkxa2g2kfczfqawyzxlr42f7zp3q6ewa',
         image : 'https://bafybeicwxov2ty5athlbtw4kgxzhz6ndfvdrjyketmedtvdthhcux4xrny.ipfs.nftstorage.link/ipfs/bafybeicwxov2ty5athlbtw4kgxzhz6ndfvdrjyketmedtvdthhcux4xrny/Gif%20(1).gif',

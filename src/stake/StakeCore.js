@@ -167,21 +167,20 @@ const calculatePoints = async () =>{
             // get the diff
             try {
                 let now  = moment();
+                let timestamp = now.valueOf();
                 let last_point_added = moment(parseInt(nft.last_point_added));
 
                 let diff = now.diff(last_point_added,'days',true);
+
+                console.log(diff,last_point_added);
             
                 let new_points = parseFloat(nft.rate) * diff
 
                 let currentPoints = parseFloat(nft.points) + parseFloat(new_points.toFixed(6));
 
-                console.log(parseFloat(nft.points)
-                ,parseFloat(new_points.toFixed(6))
-                ,currentPoints);
-
-                let update = "UPDATE stakes SET points=? WHERE id=?";
+                let update = "UPDATE stakes SET points=?,last_point_added=? WHERE id=?";
                 
-                await pool.query(update,[currentPoints,nft.id])
+                await pool.query(update,[currentPoints,timestamp,nft.id])
                 
             } catch (error) {
                 console.log('error update points',error);
@@ -220,16 +219,28 @@ const claimAllPoints = async (owner) =>{
                 }
             }
             //get the points from all tables
+            let accountOwner = resultOwner[0][0];
+
             let totalPoints = 0;
 
             for(let token of result[0]){
-
                 totalPoints += token.points
-                
             }
 
+            //update stake table table
+
+            const resUpdateStakes = await pool.query(`UPDATE stakes SET points=0 WHERE owner=?`, [owner]);
+
+            const resUpdateOwnersPoints = await pool.query(`UPDATE owners SET points=? WHERE stars_address=?`, [(totalPoints + accountOwner.points),owner]);
+
+            //update user table
+
+            
+
             return {
-                data: [],
+                data: {
+                    point_claimed : totalPoints
+                },
                 status: StatusCodes.OK,
                 message: 'OK'
             }

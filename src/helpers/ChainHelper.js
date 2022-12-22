@@ -1,40 +1,44 @@
-const { CosmWasmClient, toBech32, fromBech32 } = require('cosmwasm')
+const { CosmWasmClient,
+    SigningCosmWasmClient,
+    DirectSecp256k1HdWallet,
+    GasPrice,
+    toBech32, fromBech32 } = require('cosmwasm')
 
 const chains = [
     {
-        name : 'Cosmos Hub',
-        rpc : 'https://rpc.cosmos.omniflix.co',
-        denom : 'uatom',
-        display : 'ATOM',
-        address_prefix : "cosmos",
+        name: 'Cosmos Hub',
+        rpc: 'https://rpc.cosmos.omniflix.co',
+        denom: 'uatom',
+        display: 'ATOM',
+        address_prefix: "cosmos",
     },
     {
-        name : 'Osmosis',
-        rpc : 'https://rpc-osmosis.omniflix.io',
-        denom : 'uosmo',
-        display : 'OSMO',
-        address_prefix : "osmo",
+        name: 'Osmosis',
+        rpc: 'https://rpc-osmosis.omniflix.io',
+        denom: 'uosmo',
+        display: 'OSMO',
+        address_prefix: "osmo",
     },
     {
-        name : 'Chihuahua',
-        rpc : 'https://rpc.chihuahua.wtf',
-        denom : 'uhuahua',
-        display : 'HUAHUA',
-        address_prefix : "chihuahua",
+        name: 'Chihuahua',
+        rpc: 'https://rpc.chihuahua.wtf',
+        denom: 'uhuahua',
+        display: 'HUAHUA',
+        address_prefix: "chihuahua",
     },
     {
-        name : 'Juno',
-        rpc : 'https://rpc-juno.itastakers.com',
-        denom : 'ujuno',
-        display : 'JUNO',
-        address_prefix : "juno",
+        name: 'Juno',
+        rpc: 'https://rpc-juno.itastakers.com',
+        denom: 'ujuno',
+        display: 'JUNO',
+        address_prefix: "juno",
     },
     {
-        name : 'Stars',
-        rpc : 'https://rpc.stargaze-apis.com/',
-        denom : 'ustars',
-        display : 'STARS',
-        address_prefix : "stars",
+        name: 'Stars',
+        rpc: 'https://rpc.stargaze-apis.com/',
+        denom: 'ustars',
+        display: 'STARS',
+        address_prefix: "stars",
     },
 ]
 
@@ -68,10 +72,28 @@ const convertAdd = (addr, prefix) => {
     }
 };
 
+async function getSignedClient() {
+    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(process.env.Key, {
+        prefix: 'stars',
+    });
+
+    // if (!isValidHttpUrl(getRPC())) {
+    //   throw new Error('Invalid RPC endpoint');
+    // }
+    const gasPrice = GasPrice.fromString('0ustars');
+    
+    return await SigningCosmWasmClient.connectWithSigner(
+        getRPC(),
+        wallet,
+        { gasPrice }
+    );
+}
+
 module.exports = {
     getRPC,
     getClient,
     getClientFromRpc,
     convertAdd,
-    chains
+    chains,
+    getSignedClient
 }

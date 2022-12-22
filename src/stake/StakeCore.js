@@ -1,25 +1,32 @@
-const { getClient } = require('../helpers/ChainHelper');
+const { getClient, getSignedClient } = require('../helpers/ChainHelper');
 const { StatusCodes } = require('http-status-codes');
 const { getConnection } = require('../helpers/DBHelper');
 const { getCollectionBySg721 } = require('../../data/collections');
-const moment = require('moment')
+const moment = require('moment');
+const e = require('express');
 
 const markForStake = async (params) => {
 
     try {
         const { sender, token_id, collection } = params
 
+
+        let values = []
+        for (token of token_id.split(',')) {
+            values.push([sender, token, collection, 0]);
+        }
+
         const pool = await getConnection();
 
-        const result = await pool.query('INSERT INTO mark_stake (sender,token_id,collection,status) VALUES (?,?,?,?)',
-            [sender, token_id, collection, 0]);
+        const result = await pool.query('INSERT INTO mark_stake (sender,token_id,collection,status) VALUES ?',
+            [values]);
 
         const { affectedRows } = result[0];
 
         return {
             data: [],
             status: StatusCodes.OK,
-            message: (affectedRows === 1) ? 'Ok' : 'NOT_OK'
+            message: (affectedRows > 1) ? 'Ok' : 'NOT_OK'
         }
 
     } catch (error) {
@@ -105,7 +112,16 @@ const initiateStake = async (params) => {
 
                         //update the mark stake
                         let update = "UPDATE mark_stake SET status=1 WHERE id=?";
-                        await pool.query(update,[markDetails.id])
+                        await pool.query(update, [markDetails.id])
+
+                        //add to the my activity
+                        await updateMyActivities('stake',
+                            markDetails[0].sender,
+                            collectionDetails.sg721,
+                            token_id,
+                            "",
+                            timestamp);
+
 
                         return {
                             data: {
@@ -155,35 +171,33 @@ const initiateStake = async (params) => {
     }
 }
 
-const calculatePoints = async () =>{
+const calculatePoints = async () => {
     try {
         const pool = await getConnection();
-        
-        let result = await pool.query('SELECT * from stakes',[]);
+
+        let result = await pool.query('SELECT * from stakes', []);
 
         let stakes = result[0];
 
-        for(let nft of stakes){
+        for (let nft of stakes) {
             // get the diff
             try {
-                let now  = moment();
+                let now = moment();
                 let timestamp = now.valueOf();
                 let last_point_added = moment(parseInt(nft.last_point_added));
 
-                let diff = now.diff(last_point_added,'days',true);
+                let diff = now.diff(last_point_added, 'days', true);
 
-                console.log(diff,last_point_added);
-            
                 let new_points = parseFloat(nft.rate) * diff
 
                 let currentPoints = parseFloat(nft.points) + parseFloat(new_points.toFixed(6));
 
                 let update = "UPDATE stakes SET points=?,last_point_added=? WHERE id=?";
-                
-                await pool.query(update,[currentPoints,timestamp,nft.id])
-                
+
+                await pool.query(update, [currentPoints, timestamp, nft.id])
+
             } catch (error) {
-                console.log('error update points',error);
+                console.log('error update points', error);
             }
 
         }
@@ -193,25 +207,25 @@ const calculatePoints = async () =>{
     }
 }
 
-const claimAllPoints = async (owner) =>{
+const claimAllPoints = async (owner) => {
     try {
         //get the staked nfts
         const pool = await getConnection();
 
         const result = await pool.query(`SELECT * from stakes WHERE owner=?`, [owner]);
 
-        if(result[0].length === 0){
+        if (result[0].length === 0) {
             return {
                 data: [],
                 status: StatusCodes.OK,
                 message: 'No_Staked_Tokens_Found'
             }
-        }else{
+        } else {
 
             //get the account details
             const resultOwner = await pool.query(`SELECT * from owners WHERE stars_address=?`, [owner]);
 
-            if(resultOwner[0].length === 0){
+            if (resultOwner[0].length === 0) {
                 return {
                     data: [],
                     status: StatusCodes.OK,
@@ -223,30 +237,31 @@ const claimAllPoints = async (owner) =>{
 
             let totalPoints = 0;
 
-            for(let token of result[0]){
+            for (let token of result[0]) {
                 totalPoints += token.points
             }
 
             //update stake table table
-
             const resUpdateStakes = await pool.query(`UPDATE stakes SET points=0 WHERE owner=?`, [owner]);
 
-            const resUpdateOwnersPoints = await pool.query(`UPDATE owners SET points=? WHERE stars_address=?`, [(totalPoints + accountOwner.points),owner]);
-
             //update user table
+            const resUpdateOwnersPoints = await pool.query(`UPDATE owners SET points=? WHERE stars_address=?`, [(totalPoints + accountOwner.points), owner]);
 
-            
+            //add to the logs
+            let timestamp = moment().valueOf();
+            await updateMyActivities('claim_all_points', owner, 'all', 'all',
+                `${(totalPoints + accountOwner.points)} points claimed.`, timestamp)
 
             return {
                 data: {
-                    point_claimed : totalPoints
+                    point_claimed: totalPoints
                 },
                 status: StatusCodes.OK,
                 message: 'OK'
             }
         }
 
-        
+
 
     } catch (error) {
         console.log('error-claim-points', error);
@@ -258,10 +273,260 @@ const claimAllPoints = async (owner) =>{
     }
 }
 
+const claimSingleNftPoints = async (params) => {
+    try {
+        const { sender, token_id, collection } = params
+
+        const pool = await getConnection();
+
+        //get the details
+        const result = await pool.query(`SELECT * from stakes WHERE owner=? AND token_id=? AND collection=?`,
+            [sender, token_id, collection]);
+
+        if (result[0].length === 0) {
+            return {
+                data: [],
+                status: StatusCodes.OK,
+                message: 'No_Staked_Tokens_Found'
+            }
+        } else {
+
+            const nftDetails = result[0][0];
+
+            //get the account details
+            const resultOwner = await pool.query(`SELECT * from owners WHERE stars_address=?`, [sender]);
+
+            if (resultOwner[0].length === 0) {
+                return {
+                    data: [],
+                    status: StatusCodes.OK,
+                    message: 'No_Account_Found'
+                }
+            }
+            let accountOwner = resultOwner[0][0];
+
+            const resUpdateStakes = await pool.query(`UPDATE stakes SET points=0 WHERE owner=? AND token_id=? AND collection=?`,
+                [sender, token_id, collection]);
+
+            const resUpdateOwnersPoints = await pool.query(`UPDATE owners SET points=? WHERE stars_address=?`,
+                [(nftDetails.points + accountOwner.points), sender]);
+
+            let timestamp = moment().valueOf();
+            await updateMyActivities('claim_single', sender, collection, token_id, `${(nftDetails.points + accountOwner.points)} points claimed.`, timestamp)
+
+            return {
+                data: {
+                    point_claimed: nftDetails.points
+                },
+                status: StatusCodes.OK,
+                message: 'OK'
+            }
+        }
+    } catch (error) {
+        console.log('error-claim_single-nft-points', error);
+        return {
+            data: [],
+            status: StatusCodes.NOT_ACCEPTABLE,
+            message: 'Something went wrong.Please try again later'
+        }
+    }
+}
+
+const unStake = async (params) => {
+    try {
+
+        const { sender, token_id, collection } = params
+
+        const pool = await getConnection();
+
+        //get the details
+        const result = await pool.query(`SELECT * from stakes WHERE owner=? AND token_id=? AND collection=?`,
+            [sender, token_id, collection]);
+
+        if (result[0].length === 0) {
+            return {
+                data: [],
+                status: StatusCodes.OK,
+                message: 'No_Staked_Tokens_Found'
+            }
+        }
+        //delete the record
+        const deleteFromStakeRes = await pool.query(`DELETE FROM stakes WHERE owner=? AND token_id=? AND collection=?`,
+            [sender, token_id, collection]);
+
+        const nftDetails = result[0][0];
+
+        const resultOwner = await pool.query(`SELECT * from owners WHERE stars_address=?`, [sender]);
+
+        if (resultOwner[0].length === 0) {
+            return {
+                data: [],
+                status: StatusCodes.OK,
+                message: 'No_Account_Found'
+            }
+        }
+
+        let accountOwner = resultOwner[0][0];
+        let timestamp = moment().valueOf();
+
+        //transfer nft to the owner
+
+        const msg = {
+            transfer_nft: {
+                recipient: nftDetails.owner,
+                token_id: `${nftDetails.token_id}`,
+            },
+        };
+
+        let client = await getSignedClient()
+
+        let resTx = await client.execute(
+            process.env.Staking_Wallet,
+            nftDetails.collection,
+            msg,
+            'auto',
+            'transfer',
+            []
+        );
+
+
+        const resUpdateUnStakes = await pool.query(`INSERT INTO unstakes (owner,token_id,collection,rate,timestamp,last_point_added,points,points_claimed,tx) VALUES(?,?,?,?,?,?,?,?,?)`,
+            [
+                sender,
+                token_id,
+                collection,
+                nftDetails.rate,
+                timestamp,
+                nftDetails.last_point_added,
+                0,
+                nftDetails.points,
+                resTx.transactionHash
+            ]);
+
+        const resUpdateOwnersPoints = await pool.query(`UPDATE owners SET points=? WHERE stars_address=?`,
+            [(nftDetails.points + accountOwner.points), sender]);
+
+        await updateMyActivities('unstake', sender, collection, token_id, `${(nftDetails.points + accountOwner.points)} points claimed and unstaked.`, timestamp)
+
+        return {
+            data: {
+                point_claimed: nftDetails.points,
+                unstaked: {
+                    collection,
+                    token_id,
+                    tx: resTx.transactionHash
+                }
+            },
+            status: StatusCodes.OK,
+            message: 'OK'
+        }
+
+    } catch (error) {
+        console.log('error-unStake', error);
+        return {
+            data: [],
+            status: StatusCodes.NOT_ACCEPTABLE,
+            message: 'Something went wrong.Please try again later'
+        }
+    }
+}
+
+const getMyStakedNfts = async (owner) => {
+    try {
+
+        const pool = await getConnection();
+
+        let result = await pool.query('SELECT * from stakes WHERE owner=?', [owner]);
+
+        if (result[0].length === 0) {
+            return {
+                data: [],
+                status: StatusCodes.OK,
+                message: 'No_Staked_Tokens_Found'
+            }
+        } else {
+            let stakes = result[0];
+            let response = []
+            for (let nft of stakes) {
+
+                let res = { ...nft };
+
+                delete res.tx
+                delete res.points_claimed
+                delete res.status
+                delete res.last_point_added
+                delete res.points
+
+                response.push({
+                    ...res,
+                    claimable_points: nft.points
+                });
+
+            }
+
+            return {
+                data: response,
+                status: StatusCodes.OK,
+                message: 'MY_STAKED_NFTS'
+            }
+
+        }
+
+    } catch (error) {
+        console.log('error-initiate-stake', error);
+        return {
+            data: [],
+            status: StatusCodes.NOT_ACCEPTABLE,
+            message: 'Something went wrong.Please try again later'
+        }
+        console.log(error);
+    }
+}
+
+const updateMyActivities = async (type, owner, collection, token_id, description, timestamp) => {
+    try {
+        const pool = await getConnection();
+
+        await pool.query(`INSERT INTO my_activities (type,owner,collection,token_id,description,timestamp) VALUES (?,?,?,?,?,?)`,
+            [type, owner, collection, token_id, description, timestamp])
+    } catch (error) {
+        console.log('error put my activities', error);
+    }
+}
+
+const demo = async () => {
+    try {
+        const msg = {
+            transfer_nft: {
+                recipient: 'stars17y9ysn4uwusc0qv0d48wtc5rf4gnu6mqvjpvg9',
+                token_id: `144`,
+            },
+        };
+
+        let client = await getSignedClient()
+
+        let resTx = await client.execute(
+            process.env.Staking_Wallet,
+            'stars1ca29gcvk6n77neqw775ke6pqg38jzptaqnuwvpkktzc70ncdd39sfmeuwh',
+            msg,
+            'auto',
+            'unstake',
+            []
+        );
+
+        console.log(resTx);
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 module.exports = {
     markForStake,
     initiateStake,
     calculatePoints,
-    claimAllPoints
+    claimAllPoints,
+    getMyStakedNfts,
+    claimSingleNftPoints,
+    unStake,
+    demo
 }

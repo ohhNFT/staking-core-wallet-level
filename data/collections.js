@@ -194,6 +194,22 @@ const Collections = [
                 category: 'all'
             }
         ],
+    },
+    {
+        name : 'Demo collection 4 - Wads ',
+        description : 'Demo : Using this to test the statking',
+        sg721 : 'stars156x86uprzaj04v7qwnpl8djj5jws3gn73jz08qkydmkd0c0lp6gqv575pm',
+        minter : 'stars1fjm70x5k967ecwtqxntt88peylg8zcj3mqy0ehp057pyppp9pdwsnc8cvw',
+        CID : 'bafybeibprifabdlxuxqxmogp5djkxa2g2kfczfqawyzxlr42f7zp3q6ewa',
+        image : 'https://bafybeicwxov2ty5athlbtw4kgxzhz6ndfvdrjyketmedtvdthhcux4xrny.ipfs.nftstorage.link/ipfs/bafybeicwxov2ty5athlbtw4kgxzhz6ndfvdrjyketmedtvdthhcux4xrny/Gif%20(1).gif',
+        chain : 'staragze',
+        size : 379,
+        rates: [
+            {
+                rate: 0.06,
+                category: 'all'
+            }
+        ],
     }
 ]
 

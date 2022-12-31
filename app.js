@@ -40,8 +40,8 @@ app.use("/cron", async (req, res, next) => {
 
 app.use("/", async (req, res, next) => {
     res.status(200).json({
-        message : 'Welcome to Owlies Core',
-        version : '0.0.1'
+        message: 'Welcome to Owlies Core',
+        version: '0.0.1'
     });
 })
 

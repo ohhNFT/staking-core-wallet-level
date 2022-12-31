@@ -14,7 +14,7 @@ const getConnection = async () => {
             queueLimit: 0
         });
 
-        return pool;
+        return await pool.getConnection();
 
     } catch (error) {
         console.log(error);

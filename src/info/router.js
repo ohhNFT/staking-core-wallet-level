@@ -1,7 +1,7 @@
 const express = require('express');
 const { processResponse } = require('../helpers/ResponseHelper');
 const { getBalance } = require('./Balance');
-const { getProfileInfo, getCollectionDetails } = require('./SyncCollections');
+const { getProfileInfo, getCollectionDetails, getOffers } = require('./SyncCollections');
 const { getStakingInfo } = require('./SyncStakingInfo');
 const router = express.Router();
 
@@ -69,6 +69,30 @@ router.get('/staking-info', async (req, res, next) => {
         const stakingInfo = await getStakingInfo();
 
         return res.status(200).json(processResponse('Staking Tokonomics', stakingInfo));
+
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json(processResponse(error.toString(), null))
+    }
+})
+
+router.get('/offers', async (req, res, next) => {
+    try {
+
+        const { token_id, collection } = req.query
+
+        //validate address
+        if (!collection) {
+            return res.status(400).json(processResponse('', 'Collection not valid', null));
+        }
+
+        if (!token_id) {
+            return res.status(400).json(processResponse('', 'Token Id not valid', null));
+        }
+
+        const offers = await getOffers(token_id,collection);
+
+        return res.status(200).json(processResponse('Offers', offers));
 
     } catch (error) {
         console.log(error);

@@ -13,6 +13,7 @@ app.use(bodyParser.json());
 const router = require('./src/router');
 const { calculatePoints, claimAllPoints, getMyStakedNfts, demo } = require("./src/stake/StakeCore");
 const { getBalance } = require("./src/info/Balance");
+const { getOffers } = require("./src/info/SyncCollections");
 
 //init server
 app.listen(process.env.PORT || 3000, async () => {
@@ -20,6 +21,7 @@ app.listen(process.env.PORT || 3000, async () => {
     // await calculatePoints()
     // await demo()
     // await getBalance('stars17y9ysn4uwusc0qv0d48wtc5rf4gnu6mqvjpvg9')
+    // await getOffers('1515','stars1xy930u7nzynzzeld2erved4rtdkzrleqt9jr2fvkxn3d6ct4s5xs3lynaj')
 });
 
 ///validate cors

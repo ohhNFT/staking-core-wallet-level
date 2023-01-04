@@ -101,7 +101,7 @@ router.get('/offers', async (req, res, next) => {
     }
 })
 
-router.get('/sync-omniflix-collections', async (req, res, next) => {
+router.get('/sync-omniflix-nfts', async (req, res, next) => {
     try {
 
         const {address } = req.query

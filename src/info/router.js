@@ -1,6 +1,7 @@
 const express = require('express');
 const { processResponse } = require('../helpers/ResponseHelper');
 const { getBalance } = require('./Balance');
+const { syncOmniFlixNFTs } = require('./Omniflix');
 const { getProfileInfo, getCollectionDetails, getOffers } = require('./SyncCollections');
 const { getStakingInfo } = require('./SyncStakingInfo');
 const router = express.Router();
@@ -99,4 +100,25 @@ router.get('/offers', async (req, res, next) => {
         return res.status(400).json(processResponse(error.toString(), null))
     }
 })
+
+router.get('/sync-omniflix-collections', async (req, res, next) => {
+    try {
+
+        const {address } = req.query
+
+        //validate address
+        if (!address) {
+            return res.status(400).json(processResponse('', 'Address not valid', null));
+        }
+
+        const nfts = await syncOmniFlixNFTs(address);
+
+        return res.status(200).json(processResponse('Omniflix NFTS', nfts));
+
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json(processResponse(error.toString(), null))
+    }
+})
+
 module.exports = router;
